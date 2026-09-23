@@ -1,6 +1,3 @@
 *.class
 *.jar
-*.o
-*.obj
-*.a
 filesystem.img

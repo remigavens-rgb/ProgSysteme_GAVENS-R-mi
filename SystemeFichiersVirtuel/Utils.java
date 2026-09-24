@@ -97,17 +97,4 @@ public class Utils {
 
 		return result;
 	}
-	
-	
-	
-	public static void main(String[] args) {
-		
-		byte[] mem = new byte[6];
-		System.out.println(writeInt(mem, 0, 10));
-		System.out.println(readInt(mem, 0));
-
-		System.out.println(writeShort(mem, 3, (short)8));
-		System.out.println(readShort(mem, 3));
-
-	}
 }

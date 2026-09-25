@@ -30,14 +30,13 @@ public class MemoryManager {
     }
 
     private void initializeFilesystem() {
+        
         writeSuperblock();
 
-        // TODO:
-        // Réserver les blocs système 0 à 128.
-		for (int indice = 0; indice < 16; indice++ ) {
-			memory[BITMAP_OFFSET + indice] = (byte)0xFF;
-		}
-    }
+        for (int indice = 0; indice < 16; indice++ ) {
+                memory[BITMAP_OFFSET + indice] = (byte)0xFF;
+        }
+}
 
     private void writeSuperblock() {
         // TODO:

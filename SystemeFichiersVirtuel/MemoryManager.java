@@ -1,26 +1,21 @@
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class MemoryManager {
 
     public static final int BLOCK_SIZE = 512;
     public static final int TOTAL_MEMORY = 1024 * 1024;
-    public static final int NUM_BLOCKS =
-            TOTAL_MEMORY / BLOCK_SIZE;
+    public static final int NUM_BLOCKS = TOTAL_MEMORY / BLOCK_SIZE;
 
     public static final int SUPERBLOCK_OFFSET = 0;
     public static final int BITMAP_OFFSET = BLOCK_SIZE;
-    public static final int INODE_TABLE_OFFSET =
-            2 * BLOCK_SIZE;
-    public static final int DATA_OFFSET =
-            129 * BLOCK_SIZE;
+    public static final int INODE_TABLE_OFFSET = 2 * BLOCK_SIZE;
+    public static final int DATA_OFFSET = 129 * BLOCK_SIZE;
 
     public static final int INODE_SIZE = 128;
-
-    public static final int INODE_TABLE_SIZE =
-            DATA_OFFSET - INODE_TABLE_OFFSET;
-
-    public static final int MAX_INODES =
-            INODE_TABLE_SIZE / INODE_SIZE;
+    public static final int INODE_TABLE_SIZE = DATA_OFFSET - INODE_TABLE_OFFSET;
+    public static final int MAX_INODES = INODE_TABLE_SIZE / INODE_SIZE;
 
     private byte[] memory;
 
@@ -36,11 +31,9 @@ public class MemoryManager {
         for (int indice = 0; indice < 16; indice++ ) {
                 memory[BITMAP_OFFSET + indice] = (byte)0xFF;
         }
-}
+    }
 
     private void writeSuperblock() {
-        // TODO:
-        // Utiliser Utils pour écrire les métadonnées.
 
         Utils.writeString(
                 memory,
@@ -72,4 +65,55 @@ public class MemoryManager {
     public byte[] getFilesystemMemory() {
         return memory; 
     }
+
+    public boolean setBlockUsed(int blockNumber, boolean used) {
+
+        if (blockNumber < 0 || blockNumber >= NUM_BLOCKS) {
+            return false;
+        }
+
+        int byteIndex = blockNumber / 8;
+        int bitPosition = blockNumber % 8;
+        int offset = BITMAP_OFFSET + byteIndex;
+
+        //Récup bit courrant dans le mémoire
+        byte current = memory[offset];
+
+        // Si bloc use => marqué comme use
+        // si bloc non use => marqué libre
+        if (used) {
+            //
+            current = (byte) (current | (1 << bitPosition));
+        } else if (!used) {
+             // met à 0 le bit à bitPosition de current
+            current = (byte) (current & ~(1 << bitPosition));
+        }
+
+        //Réécriture dans la mémoire
+        memory[offset] = current;
+
+        return true;
+    }
+    
+
+    public int isBlockUsed(int blockNumber) {
+
+        if (blockNumber < 0 ||
+                blockNumber >= NUM_BLOCKS) {
+                return -1;
+        }
+
+        //Calcule du byteIndex
+        int byteIndex = blockNumber / 8;
+
+        //Calcule du bitPosition
+        int bitPosition = blockNumber % 8;
+
+        //Détermination de l'offset
+        int offset = BITMAP_OFFSET + byteIndex;
+
+        //lire le bit et renvoie true si le bloc est use et false si non use
+        return ((memory[offset] >> bitPosition)   & 1) == 1;
+    }
+
 }

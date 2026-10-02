@@ -116,4 +116,16 @@ public class MemoryManager {
         return ((memory[offset] >> bitPosition)   & 1) == 1;
     }
 
+        public int allocateBlock() {
+
+        for (int indice = 129; indice < NUM_BLOCKS; indice++) {
+            if (!isBlockUsed(indice)) {
+                setBlockUsed(indice, true);
+                return indice;
+            }
+        }
+
+        // si bloc non libre
+        return -1; 
+    }
 }

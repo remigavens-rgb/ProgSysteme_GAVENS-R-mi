@@ -111,13 +111,7 @@ public class VirtualFileSystem {
             System.arraycopy(data, dataSrcOffset, memory, blockOffset, bytesToCopy);
             dataSrcOffset += bytesToCopy;
         }
-
-        //Car pas de gestion des pointeurs indirects
-
-        Inode inode = new Inode(memoryManager, inodeNum);
-        long courrant = System.currentTimeMillis();
-        inode.writeToMemory(0, bytesRemaining, courrant, courrant, blockPointers, 0, (short) 0644, 1);
-
+        
         return true;
     }
 

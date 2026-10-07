@@ -98,8 +98,7 @@ public class MemoryManager {
 
     public int isBlockUsed(int blockNumber) {
 
-        if (blockNumber < 0 ||
-                blockNumber >= NUM_BLOCKS) {
+        if (blockNumber < 0 || blockNumber >= NUM_BLOCKS) {
                 return -1;
         }
 

@@ -1,0 +1,28 @@
+Question 1 : Représentation binaire
+	À chaque échange, la donnée est corrompue : quand l'un écrit 255 en int, l'autre lirait -16777216 en int.
+
+Question 2 : Signes et octets
+	memory\[offset] est un byte, il est donc compris dans une plage de valeur -128 à 127. donc il est impossible d'écrire une valeur de 0 à 255. On a donc choisit de l'écrire directement en bianaire (pour nous non signé) dans la variable, ce qui nous permet contourner le type. 
+	Pour passer en binaire on utilise 0xFF un masque et & qui nous permet de récupérer le byte en binaire.
+
+Question 3 : Sérialisation
+	Nos deux méthodes peuvent se comprendre sans pour autant écrire dans un format explicite (ex: big endian / little endian).
+	Le probleme se pose si nos fichiers doivent etre lu par d'autres programmes
+
+Question 4 : Bitmap
+	Un entier (byte) = 1 octet, or avec le bitmap on utilise un bit pour représenter un bloc. 
+	C'est donc 8 fois moins.
+
+Question 5 : Layout
+	Si des fichiers système sont créés au milieu de fichiers classiques (txt, docs, etc.), n'importe qui peut les supprimer facilement. Les regrouper dans une zone dédiée permet de les protéger (principe d'encapsulation).
+	Si l'on remplaçait par exemple le bitmap par son complémentaire, les méthodes écraseraient les fichiers déjà créés et ne pourraient plus écrire sur les blocs vides.
+
+Question 6 : Inode
+	Les métadonnées indiquent comment sont construite les données (et donc comment les lire et les écrire).Les métadonnées doivent etre lus avant les données pour ne pas etre interpréter n'importe comment.
+	Un inode stocke les metadonnées, ainsi que des pointeurs (directs et indirects). De ce fait la donnée n'est pas dans l'inode, l'inode indique juste ou la trouver et comment la lire.
+
+Question 7 : Allocation
+	En théorie, le bitmap est saturé de 1 jusqu'à 129, donc cette vérification serait une perte de temps. Mais si un bit du bitmap passait à 0 dans l'intervalle 0-129, le système de fichiers écraserait un inode, avec un risque de corruption totale.
+
+Question 8 : Fragmentation
+	Oui, on peut prélever une séquence du bitmap : les deux bitmaps sont identiques partout sauf de 130 à 136, où l'on a 0101010 et 1110000.

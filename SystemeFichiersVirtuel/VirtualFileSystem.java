@@ -72,19 +72,23 @@ public class VirtualFileSystem {
         int[] blockPointers = new int[Inode.DIRECT_POINTERS];
 
         // Allouer blocksNeeded blocs.
-        int allouee = 0;
+        int allouee2 = 0;
 
-        for (; allouee < blocksNeeded; allouee++) {
+        for (int allouee1 = allouee2; allouee < blocksNeeded; allouee1++) {
+
             int bloc = memoryManager.allocateBlock();
+            allouee2 = allouee1;    //TODO Factorisé
             if (bloc == -1) {
                 break;
             }
-            blockPointers[allouee] = bloc;
+            blockPointers[allouee2] = bloc;
         }
 
-        if (allouee < blocksNeeded) {
-            for (int indice = 0; indice < allouee; indice++) {
-                memoryManager.freeBlock(blockPointers[indice]);
+        
+        if (allouee2 < blocksNeeded) {
+            
+            for (int indice = 0; indice < allouee2; indice++) {
+                memoryManager.setBlockUsed(blockPointers[indice],false);
                 blockPointers[indice] = 0;
             }
 
@@ -146,29 +150,5 @@ public class VirtualFileSystem {
         }
 
         return fileData;
-    }
-
-    public boolean FileClear(String directory, String filename) {
-
-        int inodeNum = findInodeByName(directory, filename);
-
-        if (inodeNum == -1) { 
-            return false;
-        }
-            
-        Inode inode = new Inode(memoryManager, inodeNum);
-        int fileSize = inode.getFileSize();
-        int blocks = (fileSize + MemoryManager.BLOCK_SIZE - 1) / MemoryManager.BLOCK_SIZE;
-        int[] blockPointers = inode.getDirectPointers();
-        
-        for (int indice = 0; indice < blocks && indice < blockPointers.length; indice++) {
-            if (blockPointers[indice] != 0) {
-                memoryManager.freeBlock(blockPointers[indice]);
-            }
-        }
-
-        inode.markFree();
-        
-        return true;
     }
 }

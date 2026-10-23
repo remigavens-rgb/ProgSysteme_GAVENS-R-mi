@@ -20,6 +20,7 @@ public class CompteurDangereux {
         }
     }
     
+	
     /**
      * Méthode pour lire le compteur (également non protégée)
      * @return La valeur actuelle du compteur
